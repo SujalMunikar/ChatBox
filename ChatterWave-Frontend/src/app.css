@@ -1,0 +1,68 @@
+body {
+  /* Track */
+  /* Handle */
+  /* Handle on hover */
+}
+body ::-webkit-scrollbar {
+  width: 10px;
+}
+body ::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+body ::-webkit-scrollbar-thumb {
+  background: #888;
+}
+body ::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.scss-chat-row-container {
+  max-height: calc(100vh - 60px);
+  overflow: auto;
+}
+.scss-chat-row-container::-webkit-scrollbar {
+  width: 0;
+}
+
+.scss-chat-section-right-body {
+  flex: 1;
+  max-height: calc(100vh - 60px - 56px);
+  overflow: auto;
+}
+.my-width {
+  width: 1200px;
+  margin: 0 auto;
+}
+@media screen and (max-width: 1250px) {
+  .my-width {
+    width: 90vw;
+  }
+}
+
+.nav-active {
+  transform: translateX(0);
+}
+
+.my-darkbg {
+  background-color: #17191c;
+}
+
+.animate-char {
+  animation: charAni 2s linear infinite;
+  perspective: 1000px;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+@keyframes charAni {
+  0% {
+    transform: rotateY(0deg) scale(1);
+  }
+  50% {
+    transform: rotateY(180deg) scale(1.4);
+    color: red;
+  }
+  100% {
+    transform: rotateY(360deg) scale(1);
+  }
+}/*# sourceMappingURL=app.css.map */

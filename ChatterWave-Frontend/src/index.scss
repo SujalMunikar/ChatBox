@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+// * {
+//   @apply transition-colors duration-300;
+// }
+
+body {
+  font-family: "Roboto", system-ui, -apple-system, BlinkMacSystemFont,
+    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+    sans-serif;
+}
+
+:root {
+  --primary-color: #3490dc;
+  --secondary-color: #ffed4a;
+  --bg-color: #f8fafc;
+  --font-primary: #2d3748;
+  --font-secondary: #718096;
+  --border-primary: #272a30;
+  --bg-button: #dbdde1;
+  --link-hover: red;
+
+  --bg-button-hover: #dbdde1;
+
+  --primary: #f1f3f4;
+  --unit: #fff;
+  --stroke: #dcdcdd;
+  --dash: #dce3eb;
+  --green: #50c099;
+  --blue: #5daaee;
+  --yellow: #ffc565;
+  --salmon: #f9837c;
+  --purpur: #7b57e0;
+  --black: #000;
+
+  // for text
+  --primary-text-color: #2d3748;
+  --secondary-text-color: #718096;
+  --primary-accent-color: #7b57e0;
+  --link-hover: #dbdde1;
+  --link-color: #2b2e48;
+  //for background
+  --primary-bg-color: #f1f3f4;
+  --secondary-bg-color: #fff;
+  --unit-bg-color: #fff;
+  //for border
+  --input-border-stationary: #dcdcdd;
+  --input-border-primary: #53b9ea;
+}
+
+.dark {
+  --primary-color: #1d4ed8;
+  --secondary-color: #f59e0b;
+  --bg-color: #1a202c;
+  --font-primary: #e2e8f0;
+  --font-secondary: #a0aec0;
+  --border-primary: #272a30;
+  --bg-button: #272a30;
+  --link-hover: #22d1ee;
+
+  --bg-button-hover: #272a30;
+
+  --background-primary: #222;
+
+  --primary: #f1f3f4;
+  --unit: #191d23;
+  --stroke: #dcdcdd;
+  --dash: #dce3eb;
+  --green: #50c099;
+  --blue: #5daaee;
+  --yellow: #ffc565;
+  --salmon: #f9837c;
+  --purpur: #7b57e0;
+  --black: #000;
+  // for text
+  --primary-text-color: #e3e3e3;
+  --secondary-text-color: #a0aec0;
+  --primary-accent-color: #7b57e0;
+  --link-hover: #272a30;
+  --link-color: #b8c0cc;
+  //for background
+  --primary-bg-color: #0d0f11;
+  --secondary-bg-color: #191d23;
+  --unit-bg-color: #1a202c;
+  //for border
+  --input-border-stationary: #dcdcddac;
+  --input-border-primary: #53b9ea;
+}

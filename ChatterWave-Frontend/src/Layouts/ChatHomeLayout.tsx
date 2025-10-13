@@ -1,0 +1,128 @@
+import React, { useEffect } from "react";
+import { GiHamburgerMenu } from "react-icons/gi";
+import ChatRow, { ChatRowLoading } from "../components/Chat/ChatRow";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../store";
+import { getUsers } from "../features/user/userAction";
+import { useNavigate } from "react-router-dom";
+import { changeTheme, toggleSidebar } from "../features/UI/UISlice";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
+import { BiHome } from "react-icons/bi";
+import { ButtonWithIcon } from "../components/UI/Button/Button";
+import { getMyFriends } from "../features/friends/friendsAction";
+import { cn } from "../helper/tailwindMergeClass.helper";
+import { filterAllMyFriends } from "../features/friends/friendsSlice";
+
+interface ChatHomeLayoutPropsType {
+  children: React.ReactNode;
+}
+
+function ChatHomeLayout(props: ChatHomeLayoutPropsType) {
+  const { children } = props;
+  const [searchText, setSearchText] = React.useState("");
+  const dispatch = useDispatch<AppDispatch>();
+  const userSlice = useSelector((state: RootState) => state.user);
+  const uiSlice = useSelector((state: RootState) => state.ui);
+  const friendSlice = useSelector((state: RootState) => state.friends);
+  // const socketSlice = useSelector((state: RootState) => state.socket);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    dispatch(getUsers());
+    dispatch(getMyFriends());
+  }, [dispatch]);
+
+  useEffect(() => {
+    if (searchText.trim().length) {
+      dispatch(filterAllMyFriends(searchText));
+    } else {
+      dispatch(getMyFriends());
+    }
+  }, [searchText]);
+
+  return (
+    <div className="h-screen  flex">
+      <div
+        className={cn(
+          "left h-full    bg-white  border-[#DBDDE1] dark:border-[#272A30] border-r dark:bg-[#17191c]",
+          {
+            "w-[68px]": !uiSlice.isSidebarOpen,
+            "w-full fixed sm:relative sm:w-96 ": uiSlice.isSidebarOpen,
+          }
+        )}
+      >
+        <div className="h-[60px] flex items-center justify-center px-2 gap-4">
+          <div>
+            <ButtonWithIcon
+              onClick={() => dispatch(toggleSidebar(!uiSlice.isSidebarOpen))}
+            >
+              <GiHamburgerMenu />
+            </ButtonWithIcon>
+            {uiSlice.isSidebarOpen && (
+              <ButtonWithIcon
+                onClick={() => {
+                  return navigate("/");
+                }}
+              >
+                <BiHome />
+              </ButtonWithIcon>
+            )}
+          </div>
+          {uiSlice.isSidebarOpen && (
+            <input
+              type="text"
+              name=""
+              id=""
+              value={searchText}
+              onChange={(e) => setSearchText(e.target.value)}
+              placeholder="Search"
+              className="border border-[#DBDDE1] dark:border-[#272A30] dark:bg-[#17191C] outline-none  px-4 py-[10px] rounded-3xl flex-1 dark:text-neutral-50"
+            />
+          )}
+        </div>
+        <div className="scss-chat-row-container">
+          {!friendSlice?.loading && friendSlice?.myFriends?.length ? (
+            <>
+              {friendSlice?.myFriends?.map((e: any) => {
+                return (
+                  <ChatRow
+                    key={e?.id}
+                    active={e?.id === userSlice?.currConversationUser?.id}
+                    data={e}
+                    onClick={() => {
+                      navigate(`/chat/${e?.id}`);
+                      if (window.innerWidth < 768) {
+                        dispatch(toggleSidebar(false));
+                      }
+                    }}
+                  />
+                );
+              })}
+            </>
+          ) : (
+            <div className="dark:text-neutral-50">No Friends</div>
+          )}
+          {userSlice?.loading &&
+            [...Array(4)].map(() => {
+              return <ChatRowLoading />;
+            })}
+
+          <div className="w-[60px] mt-4 gap-4 flex flex-col items-center justify-center">
+            <button
+              type="button"
+              className="bg-sky-800 dark:bg-white text-white dark:text-[#333] size-8 grid place-items-center rounded-full"
+              onClick={() => dispatch(changeTheme(!uiSlice?.isDarkTheme))}
+            >
+              {uiSlice?.isDarkTheme ? <MdLightMode /> : <MdDarkMode />}
+            </button>
+          </div>
+        </div>
+      </div>
+      <div className="right flex-1 dark:bg-[#17191c]">{children}</div>
+
+      {/* {children} */}
+    </div>
+  );
+}
+
+export default ChatHomeLayout;
