@@ -39,7 +39,7 @@ export const verifyToken = async (token: string) => {
 
 export const sendOtpEmail = async (body: any, otp: string) => {
   try {
-    const transporter = nodemailer.createTransporter({
+    const transporter = nodemailer.createTransport({
       host: "smtp.gmail.com", // Correct host for Gmail
       port: 587, // Common port for TLS/STARTTLS
       secure: false,

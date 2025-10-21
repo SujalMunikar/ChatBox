@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 // Load environment variables
 dotenv.config();
 
-const transporter = nodemailer.createTransporter({
+const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
   secure: false,

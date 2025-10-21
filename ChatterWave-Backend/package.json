@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon --exec ts-node app.ts",
-    "test-email": "ts-node test-email.js"
+    "test-email": "ts-node test-email.js",
+    "generate-secret": "node -e \"console.log('JWT_SECRET=\\\"' + require('crypto').randomBytes(64).toString('hex') + '\\\"')\""
   },
   "keywords": [],
   "author": "",
