@@ -19,6 +19,7 @@ import { generateKeys } from "../helpers/algorithms/rsa.helper";
 const prisma = new PrismaClient();
 
 export const login = async (req: Request, res: Response) => {
+  // Authenticate a user, mint a JWT, and persist it via cookies for subsequent requests.
   const { email, password } = req.body;
   console.log(email, password);
   try {
@@ -53,6 +54,7 @@ export const login = async (req: Request, res: Response) => {
 };
 
 export const register = async (req: Request, res: Response) => {
+  // Create a new user, generate RSA keys, and kick off the email verification flow.
   const { name, email, password }: Register = req.body;
   const otp = generateOTP();
   try {
@@ -96,6 +98,7 @@ export const register = async (req: Request, res: Response) => {
 };
 
 export const resetPassword = async (req: Request, res: Response) => {
+  // Validate the user's current password before hashing and storing the replacement.
   try {
     const { oldPassword, newPassword, validatedUser } = req.body;
     const user = await prisma.user.findFirst({
@@ -198,6 +201,7 @@ export const verifyEmail = async (req: Request, res: Response) => {
 };
 
 export const logout = async (req: Request, res: Response) => {
+  // Clear the auth cookie so the browser no longer sends the previous session token.
   try {
     await deleteCookieForToken(res);
     return res.status(200).json({ success: true, message: "LOGGED OUT" });
@@ -209,6 +213,7 @@ export const logout = async (req: Request, res: Response) => {
 };
 
 export const getme = async (req: Request, res: Response) => {
+  // Reissue a token containing the sanitized user payload for client refresh workflows.
   const { validatedUser } = req.body;
 
   try {
@@ -225,6 +230,7 @@ export const getme = async (req: Request, res: Response) => {
 };
 
 export const removeAll = async (req: Request, res: Response) => {
+  // Development-only helper to purge all relational data for a clean slate.
   try {
     await prisma.conversation.deleteMany();
     await prisma.message.deleteMany();

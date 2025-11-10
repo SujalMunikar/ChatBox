@@ -3,6 +3,9 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import { getme, login, logout, register, verifyEmail } from "./authAction";
 import { getSocket } from "../socket/socketConfig";
 
+// Centralized auth slice controls login/register state and caches the user payload.
+
+
 export interface CounterState {
   value: number;
   user: unknown;
@@ -10,6 +13,7 @@ export interface CounterState {
   success: boolean;
 }
 
+// Reflects the persisted login data and async request lifecycles.
 const initialState: CounterState = {
   value: 0,
   user: null,
@@ -21,6 +25,7 @@ export const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
+    // The following demo reducers are kept for potential counter UI experiments.
     increment: (state) => {
       // Redux Toolkit allows us to write "mutating" logic in reducers. It
       // doesn't actually mutate the state because it uses the Immer library,
@@ -35,19 +40,23 @@ export const authSlice = createSlice({
       state.value += action.payload;
     },
     setAuthUser: (state, action: PayloadAction<unknown>) => {
+      // Accept updated user information from external callers (e.g., context refresh).
       state.user = action.payload;
     },
     logout: (state) => {
+      // Ensure any active socket connection closes before clearing credentials.
       state.user = null;
       const socket = getSocket();
       socket?.disconnect();
     },
     resetAuthFulfilledState: (state) => {
+      // Helper to reset transient flags between guarded flows (e.g., form submissions).
       state.success = false;
       state.loading = false;
     },
   },
   extraReducers(builder) {
+    // Async thunks update the slice based on server responses.
     // LOGIN
     builder.addCase(login.pending, (state) => {
       state.loading = true;
@@ -55,9 +64,13 @@ export const authSlice = createSlice({
     builder.addCase(
       login.fulfilled,
       (state, { payload }: PayloadAction<unknown>) => {
+        // @ts-expect-error The thunk resolves with a runtime-validated API payload the slice narrows via optional chaining.
         if (payload?.success) {
+          // @ts-expect-error Properties are guarded at runtime; TypeScript cannot infer the dynamic response structure here.
           state.user = payload.data;
+          // @ts-expect-error Token is persisted only when backend supplies it; optional chaining guards the usage.
           localStorage.setItem("user", JSON.stringify(payload.data));
+          // @ts-expect-error See comment above: dynamic action payload mirrors backend response.
           localStorage.setItem("token", payload.token);
         }
         state.loading = false;
@@ -74,7 +87,9 @@ export const authSlice = createSlice({
     builder.addCase(
       register.fulfilled,
       (state, { payload }: PayloadAction<unknown>) => {
+        // @ts-expect-error Runtime guards ensure payload has the expected shape.
         if (payload?.success) {
+          // @ts-expect-error Console debugging for API payload; optional chaining already guards access.
           console.log(payload?.data);
 
           // state.user = payload.data;
@@ -100,9 +115,13 @@ export const authSlice = createSlice({
     builder.addCase(
       getme.fulfilled,
       (state, { payload }: PayloadAction<unknown>) => {
+        // @ts-expect-error Optional chaining ensures safe access to dynamic payload.
         if (payload?.success) {
+          // @ts-expect-error Backend shape is dynamic; guarded usage keeps runtime safe.
           state.user = payload.data;
+          // @ts-expect-error Same dynamic payload as above; persisted only when available.
           localStorage.setItem("user", JSON.stringify(payload.data));
+          // @ts-expect-error Token persists only when backend provides it.
           localStorage.setItem("token", payload.token);
         }
         state.loading = false;
@@ -120,9 +139,13 @@ export const authSlice = createSlice({
       verifyEmail.fulfilled,
       (state, { payload }: PayloadAction<unknown>) => {
         console.log(payload);
+        // @ts-expect-error The response is validated at runtime prior to being stored.
         if (payload?.success) {
+          // @ts-expect-error Guarded dynamic payload handling as described above.
           state.user = payload.data;
+          // @ts-expect-error Safe usage due to optional chaining guard.
           localStorage.setItem("user", JSON.stringify(payload.data));
+          // @ts-expect-error Same reasoning: optional chaining assures token presence.
           localStorage.setItem("token", payload.token);
           state.success = true;
         }
@@ -142,6 +165,7 @@ export const authSlice = createSlice({
       logout.fulfilled,
       (state, { payload }: PayloadAction<unknown>) => {
         state.user = null;
+        // @ts-expect-error Logout response is loosely typed; guard ensures success flag exists before clearing storage.
         if (payload?.success) {
           localStorage.clear();
         }

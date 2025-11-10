@@ -3,6 +3,7 @@ import ChatHomeLayout from "../../Layouts/ChatHomeLayout";
 import WelcomeChat from "../../components/Chat/WelcomeChat";
 import { useAppDispatch } from "../../store";
 import { setConversationUser } from "../../features/user/userSlice";
+import ProfileLayout from "../../Layouts/ProfileLayout";
 
 function ChatHome() {
   const dispatch = useAppDispatch();
@@ -13,13 +14,11 @@ function ChatHome() {
     };
   }, [dispatch]);
   return (
-    <>
-      <ChatHomeLayout>
-        <>
-          <WelcomeChat />
-        </>
+    <ProfileLayout>
+      <ChatHomeLayout embedded>
+        <WelcomeChat />
       </ChatHomeLayout>
-    </>
+    </ProfileLayout>
   );
 }
 

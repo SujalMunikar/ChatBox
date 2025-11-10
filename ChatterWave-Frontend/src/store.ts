@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from "react-redux";
 import type { TypedUseSelectorHook } from "react-redux";
 import friendsReducer from "./features/friends/friendsSlice";
 
+// Central Redux store wiring together all feature slices.
+
 export const store = configureStore({
   reducer: {
     auth: authReducer,
@@ -24,5 +26,6 @@ export type RootState = ReturnType<typeof store.getState>;
 // Inferred type: {posts: PostsState, comments: CommentsState, users: UsersState}
 export type AppDispatch = typeof store.dispatch;
 
+// Re-export strongly typed helpers so components can use them without re-declaring types.
 export const useAppDispatch: () => AppDispatch = useDispatch;
 export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

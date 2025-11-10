@@ -16,6 +16,7 @@ import friendshipRoute from "./routes/friendship.route";
 // const primes = selectTwoDistinctPrimes(1, 500);
 // console.log(generateKeys(1, 9999));
 
+// Bootstrap the Express app, register middleware, then expose REST routes and socket server.
 const PORT = process.env.PORT || 8000;
 
 //cookies
@@ -38,6 +39,7 @@ app.use("/user", userRoute);
 app.use("/friendship", friendshipRoute);
 
 app.get("/", (req: Request, res: Response) => {
+  // Health check to confirm the API is reachable.
   return res
     .status(200)
     .json({ success: true, message: "Homepage" });
@@ -45,6 +47,7 @@ app.get("/", (req: Request, res: Response) => {
 
 //error end point
 app.get("*", (req: Request, res: Response) => {
+  // Catch-all to surface 404s as JSON instead of the default HTML response.
   return res
     .status(404)
     .json({ success: false, message: "shutdown error" });

@@ -1,4 +1,4 @@
-import React from "react";
+ 
 import ProfileLayout from "../Layouts/ProfileLayout";
 import PageTitleSection from "../components/UI/PageTitleSection";
 import Avatar from "../components/Avatar";
@@ -15,7 +15,7 @@ function ProfilePage() {
       <div className="my-width pb-10">
         <PageTitleSection title="Profile" p="Personalize your experience." />
         <div className="bg-secondary-bg-color pb-10 ">
-          <div className="flex flex-col items-center justify-center p-4 py-10 ">
+          <div className="flex flex-col items-center justify-center p-4 py-6 ">
             <Avatar name={authState?.user.name} size={sizeList.large} />
             <h1 className="text-primary-accent-color text-xl mt-1 font-bold">
               {authState?.user.name}

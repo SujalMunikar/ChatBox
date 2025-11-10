@@ -8,6 +8,7 @@ import {
 import { isAuthenticated } from "../middlewares/auth.middleware";
 const router = Router();
 
+// User directory and profile maintenance routes.
 router.get("/", isAuthenticated, getUsers);
 router.get("/all", getAllUser);
 router.delete("/", deleteAllUser);

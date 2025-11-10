@@ -1,3 +1,4 @@
+// DTOs describing payload shapes used throughout the auth layer.
 export interface Register {
   name: string;
   email: string;

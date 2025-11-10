@@ -1,5 +1,6 @@
 import { Response } from "express";
 
+// Shared helpers for common HTTP error responses so controllers stay concise.
 export const returnInvalidCredentials = (res: Response) => {
   return res.status(401).json({
     success: false,

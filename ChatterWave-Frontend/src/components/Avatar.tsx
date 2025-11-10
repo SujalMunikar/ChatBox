@@ -4,9 +4,10 @@ import { cn } from "../helper/tailwindMergeClass.helper";
 interface AvatarType {
   name?: string;
   size?: sizeList;
+  image?: string | null;
 }
 
-function Avatar({ name, size = sizeList.default }: AvatarType) {
+function Avatar({ name, size = sizeList.default, image }: AvatarType) {
   return (
     <div
       className={cn(
@@ -18,11 +19,17 @@ function Avatar({ name, size = sizeList.default }: AvatarType) {
           " rounded-full uppercase  bg-secondary-bg-color grid place-items-center ",
           {
             "size-8": size === sizeList.default,
+            "size-10 text-sm": size === sizeList.small,
+            "size-14 text-base": size === sizeList.medium,
             "size-20 text-3xl": size === sizeList.large,
           }
         )}
       >
-        {name?.length ? name[0] : "-"}
+        {image ? (
+          <img className="w-full h-full object-cover rounded-full" src={image} alt={name ?? "profile"} />
+        ) : (
+          <span>{name?.length ? name[0] : "-"}</span>
+        )}
       </div>
     </div>
   );

@@ -3,11 +3,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { setAuthUser } from "../features/auth/authSlice";
 
+// Consolidated hook that exposes authentication state and rehydrates Redux from localStorage on mount.
+
 const useAuth = () => {
   const authSlice = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
+    // Align Redux with any persisted credentials so page refreshes stay logged in.
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
 

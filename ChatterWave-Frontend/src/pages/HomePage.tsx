@@ -1,20 +1,19 @@
-import React, { PropsWithChildren } from "react";
+ 
 import ProfileLayout from "../Layouts/ProfileLayout";
 import useAuth from "../hooks/useAuth";
 import { BiMessage } from "react-icons/bi";
 import { ButtonPrimaryGradient } from "../components/UI/Button/Button";
 import heroSvg from "../assets/hero.svg";
-import { useAppDispatch } from "../store";
+ 
 import { useNavigate } from "react-router-dom";
 
 function HomePage() {
   const { authState } = useAuth();
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   return (
     <ProfileLayout>
       <div className="my-width pb-10">
-        <div className="flex mt-[80px] gap-5 flex-col-reverse md:flex-row">
+  <div className="flex mt-6 gap-5 flex-col-reverse md:flex-row">
           
           <div className=" flex-1">
             <div className="h-20">

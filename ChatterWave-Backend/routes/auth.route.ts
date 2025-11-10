@@ -11,6 +11,8 @@ import {
 import { isAuthenticated } from "../middlewares/auth.middleware";
 const router = Router();
 
+// Authentication and session lifecycle endpoints.
+
 // router.get("/test", (req: Request, res: Response) => {
 //   res.status(201).json({ status: true });
 // });

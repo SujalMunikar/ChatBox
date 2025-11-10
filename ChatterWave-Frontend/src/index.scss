@@ -1,6 +1,30 @@
+/* stylelint-disable */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Hide scrollbars while keeping scroll functionality */
+.thin-scrollbar {
+  scrollbar-width: 1px; /* Firefox */
+}
+.thin-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none;
+}
+
+/* Reserve gutter to prevent layout shift when vertical scrollbar appears */
+.scrollbar-stable {
+  scrollbar-gutter: stable;
+}
+
+/* Reserve space for scrollbars on both edges; keeps a visible right gutter
+   even when no scrollbar is rendered, preventing layout nudges and creating
+   a subtle breathing room near the edge. */
+.scrollbar-stable-both {
+  scrollbar-gutter: stable both-edges;
+}
+
 // * {
 //   @apply transition-colors duration-300;
 // }

@@ -41,9 +41,9 @@ model Message {
   receiver                    User          @relation("ReceivedMessages", fields: [receiverId], references: [id], onDelete: Cascade)
   receiverId                  String        @db.VarChar(36) 
   plainMessage                String?       @db.Text
-  message                     String        @db.LongText
-  encryptedMessageFromSender  String        @db.LongText
-  encryptedMessageForReceiver String        @db.LongText
+  message                     String        @db.Text
+  encryptedMessageFromSender  String        @db.Text
+  encryptedMessageForReceiver String        @db.Text
   createdAt                   DateTime      @default(now())
   updatedAt                   DateTime      @updatedAt
   Conversation                Conversation? @relation("ConversationMessages", fields: [conversationId], references: [id], onDelete: Cascade)
@@ -58,7 +58,6 @@ model Conversation {
   updatedAt    DateTime  @updatedAt
 }
 
-// todo
 model Friendship {
   id       String @id @default(uuid())
   user     User   @relation("UserFriends", fields: [userId], references: [id], onDelete: Cascade)
@@ -69,7 +68,6 @@ model Friendship {
   @@unique([userId, friendId])
 }
 
-// friend request part is done 
 model FriendRequest {
   id         String @id @default(uuid())
   sender     User   @relation("UserFriendRequestBy", fields: [senderId], references: [id])

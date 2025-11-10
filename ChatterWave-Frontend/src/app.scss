@@ -1,22 +1,21 @@
+html {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+html::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
+
 body {
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
 
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background: #f1f1f1;
-  }
-
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: #888;
-  }
-
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
+body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 .scss-chat-row-container {
   max-height: calc(100vh - 60px);
@@ -28,11 +27,8 @@ body {
 
 .scss-chat-section-right-body {
   flex: 1;
-  max-height: calc(100vh - 60px - 56px);
-  overflow: auto;
-  &::-webkit-scrollbar {
-    // width: 0;
-  }
+  // Let flex layout control height so the input sits within the chat panel
+  // min-height removed to prevent pushing the input to the page footer
 }
 
 .my-width {

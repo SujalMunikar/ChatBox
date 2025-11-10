@@ -1,9 +1,11 @@
 import { Request, Response } from "express";
 import { PrismaClient } from "@prisma/client";
+import { io, getReceiverSocketId } from "../socket/socket";
 
 const prisma = new PrismaClient();
 
 export const getAllUsers = async (req: Request, res: Response) => {
+  // List every verified user except the current one, flagging which ones are already friends.
   try {
     const validatedUser = req.body.validatedUser.id;
     let users = await prisma.user.findMany({
@@ -53,6 +55,7 @@ export const getAllUsers = async (req: Request, res: Response) => {
 
 // get all my friends only
 export const getMyFriends = async (req: Request, res: Response) => {
+  // Fetch confirmed friendships and format them as a flat user list for the client.
   try {
     const users = await prisma.friendship.findMany({
       where: {
@@ -91,6 +94,7 @@ export const getIncomingFriendRequests = async (
   req: Request,
   res: Response
 ) => {
+  // Retrieve pending requests where the current user is the receiver.
   try {
     const requests = await prisma.friendRequest.findMany({
       where: {
@@ -126,6 +130,7 @@ export const getIncomingFriendRequests = async (
 };
 
 export const getOutgoinFriendRequests = async (req: Request, res: Response) => {
+  // Retrieve pending requests initiated by the current user.
   try {
     const requests = await prisma.friendRequest.findMany({
       where: {
@@ -160,6 +165,7 @@ export const getOutgoinFriendRequests = async (req: Request, res: Response) => {
 };
 
 export const sendFriendRequest = async (req: Request, res: Response) => {
+  // Guard against duplicate friendships or duplicate requests before creating a new friend request.
   try {
     const alreadyFriend = await prisma.friendship.findFirst({
       where: {
@@ -210,6 +216,7 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
 };
 
 export const acceptFriendRequest = async (req: Request, res: Response) => {
+  // Convert a pending request into a bidirectional friendship and clean up redundant records.
   try {
     const validatedUser = req.body.validatedUser;
     const friendRequestId = req.body.friendRequestId;
@@ -277,6 +284,113 @@ export const acceptFriendRequest = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: "Couldn't accept friend request",
+      error,
+    });
+  }
+};
+
+export const unfriend = async (req: Request, res: Response) => {
+  // Remove both sides of a friendship edge so neither user appears in the other's list.
+  try {
+    const validatedUser = req.body.validatedUser;
+    const friendId = req.body.friendId as string;
+
+    if (!friendId) {
+      return res.status(400).json({ success: false, message: "friendId is required" });
+    }
+
+    await prisma.friendship.deleteMany({
+      where: {
+        OR: [
+          { userId: validatedUser.id, friendId },
+          { userId: friendId, friendId: validatedUser.id },
+        ],
+      },
+    });
+
+    return res.status(200).json({ success: true, message: "Unfollowed successfully" });
+  } catch (error) {
+    return res.status(500).json({ success: false, message: "Couldn't unfriend", error });
+  }
+};
+
+export const cancelFriendRequest = async (req: Request, res: Response) => {
+  // Allow the sender to retract a request and notify the receiver in real time.
+  try {
+    const validatedUser = req.body.validatedUser;
+    const friendRequestId = req.body.friendRequestId;
+
+    const friendRequest = await prisma.friendRequest.findUnique({
+      where: { id: friendRequestId },
+    });
+
+    if (!friendRequest || friendRequest.senderId !== validatedUser.id) {
+      return res.status(404).json({
+        success: false,
+        message: "Friend request not found or unauthorized.",
+      });
+    }
+
+    await prisma.friendRequest.delete({ where: { id: friendRequestId } });
+
+    // Notify the receiver that the request was cancelled
+    const receiverSocketId = getReceiverSocketId(friendRequest.receiverId);
+    if (receiverSocketId) {
+      io.to(receiverSocketId).emit("friend-request-cancelled", {
+        byName: validatedUser.name,
+        byId: validatedUser.id,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Friend request cancelled.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Couldn't cancel friend request",
+      error,
+    });
+  }
+};
+
+export const rejectFriendRequest = async (req: Request, res: Response) => {
+  // Allow the receiver to decline a request and alert the sender over the socket channel.
+  try {
+    const validatedUser = req.body.validatedUser;
+    const friendRequestId = req.body.friendRequestId;
+
+    const friendRequest = await prisma.friendRequest.findUnique({
+      where: { id: friendRequestId },
+    });
+
+    if (!friendRequest || friendRequest.receiverId !== validatedUser.id) {
+      return res.status(404).json({
+        success: false,
+        message: "Friend request not found or unauthorized.",
+      });
+    }
+
+    await prisma.friendRequest.delete({ where: { id: friendRequestId } });
+
+    // Notify the sender that the request was rejected
+    const senderSocketId = getReceiverSocketId(friendRequest.senderId);
+    if (senderSocketId) {
+      io.to(senderSocketId).emit("friend-request-rejected", {
+        byName: validatedUser.name,
+        byId: validatedUser.id,
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Friend request rejected.",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Couldn't reject friend request",
       error,
     });
   }

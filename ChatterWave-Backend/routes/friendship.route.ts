@@ -7,6 +7,9 @@ import {
   getMyFriends,
   getOutgoinFriendRequests,
   sendFriendRequest,
+  cancelFriendRequest,
+  rejectFriendRequest,
+  unfriend,
 } from "../controllers/friendship.controller";
 const router = Router();
 
@@ -14,6 +17,7 @@ const router = Router();
 //   res.status(201).json({ status: true });
 // });
 
+// Complete friendship lifecycle: discovery, requests, acceptance, and removal.
 router.get("/get-all-users", isAuthenticated, getAllUsers);
 
 router.get("/get-my-friends", isAuthenticated, getMyFriends);
@@ -33,5 +37,9 @@ router.get(
 router.post("/send-friend-request", isAuthenticated, sendFriendRequest);
 
 router.post("/accept-friend-request", isAuthenticated, acceptFriendRequest);
+
+router.post("/cancel-friend-request", isAuthenticated, cancelFriendRequest);
+router.post("/reject-friend-request", isAuthenticated, rejectFriendRequest);
+router.post("/unfriend", isAuthenticated, unfriend);
 
 export default router;

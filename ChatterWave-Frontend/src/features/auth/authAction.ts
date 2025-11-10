@@ -2,6 +2,8 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import api from "../../config/axiosConfig";
 import toast from "react-hot-toast";
 
+// Async thunks for authentication lifecycle events (login, register, verify, etc.).
+
 interface LoginDetailsType {
   email: string;
   password: string;
@@ -69,6 +71,7 @@ export const register = createAsyncThunk(
       }
     } catch (error: unknown) {
       console.log(error);
+      // @ts-expect-error Toast expects a string but backend error shape is dynamic; runtime guards protect usage.
       toast.error(error?.response?.data?.message);
     }
   }

@@ -47,6 +47,7 @@ function generateKeys(min: number, max: number): RSAKeys {
   const d = modInverse(e, x);
 
   // Encrypt the message
+  // Self-test ensures the generated key pair can successfully encrypt/decrypt sample text.
   const cipherText = encryptMessage("Abid Adhikari", [BigInt(e), BigInt(n)]);
   const plainText = decryptMessage(cipherText, [BigInt(d), BigInt(n)]);
 

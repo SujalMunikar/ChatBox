@@ -5,9 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../store";
 import { getUsers } from "../features/user/userAction";
 import { useNavigate } from "react-router-dom";
-import { changeTheme, toggleSidebar } from "../features/UI/UISlice";
-import { MdDarkMode, MdLightMode } from "react-icons/md";
-import { BiHome } from "react-icons/bi";
+import { toggleSidebar } from "../features/UI/UISlice";
 import { ButtonWithIcon } from "../components/UI/Button/Button";
 import { getMyFriends } from "../features/friends/friendsAction";
 import { cn } from "../helper/tailwindMergeClass.helper";
@@ -15,10 +13,11 @@ import { filterAllMyFriends } from "../features/friends/friendsSlice";
 
 interface ChatHomeLayoutPropsType {
   children: React.ReactNode;
+  embedded?: boolean;
 }
 
 function ChatHomeLayout(props: ChatHomeLayoutPropsType) {
-  const { children } = props;
+  const { children, embedded = false } = props;
   const [searchText, setSearchText] = React.useState("");
   const dispatch = useDispatch<AppDispatch>();
   const userSlice = useSelector((state: RootState) => state.user);
@@ -41,10 +40,10 @@ function ChatHomeLayout(props: ChatHomeLayoutPropsType) {
   }, [searchText]);
 
   return (
-    <div className="h-screen  flex">
+    <div className={cn("flex", embedded ? "h-[calc(100vh-80px)]" : "h-screen")}>
       <div
         className={cn(
-          "left h-full    bg-white  border-[#DBDDE1] dark:border-[#272A30] border-r dark:bg-[#17191c]",
+          "left h-full flex flex-col bg-white border-[#DBDDE1] dark:border-[#272A30] border-r dark:bg-[#17191c]",
           {
             "w-[68px]": !uiSlice.isSidebarOpen,
             "w-full fixed sm:relative sm:w-96 ": uiSlice.isSidebarOpen,
@@ -58,7 +57,7 @@ function ChatHomeLayout(props: ChatHomeLayoutPropsType) {
             >
               <GiHamburgerMenu />
             </ButtonWithIcon>
-            {uiSlice.isSidebarOpen && (
+            {/* {uiSlice.isSidebarOpen && (
               <ButtonWithIcon
                 onClick={() => {
                   return navigate("/");
@@ -66,7 +65,7 @@ function ChatHomeLayout(props: ChatHomeLayoutPropsType) {
               >
                 <BiHome />
               </ButtonWithIcon>
-            )}
+            )} */}
           </div>
           {uiSlice.isSidebarOpen && (
             <input
@@ -80,7 +79,7 @@ function ChatHomeLayout(props: ChatHomeLayoutPropsType) {
             />
           )}
         </div>
-        <div className="scss-chat-row-container">
+        <div className="scss-chat-row-container flex-1 overflow-y-auto thin-scrollbar scrollbar-stable">
           {!friendSlice?.loading && friendSlice?.myFriends?.length ? (
             <>
               {friendSlice?.myFriends?.map((e: any) => {
@@ -106,19 +105,12 @@ function ChatHomeLayout(props: ChatHomeLayoutPropsType) {
             [...Array(4)].map(() => {
               return <ChatRowLoading />;
             })}
-
-          <div className="w-[60px] mt-4 gap-4 flex flex-col items-center justify-center">
-            <button
-              type="button"
-              className="bg-sky-800 dark:bg-white text-white dark:text-[#333] size-8 grid place-items-center rounded-full"
-              onClick={() => dispatch(changeTheme(!uiSlice?.isDarkTheme))}
-            >
-              {uiSlice?.isDarkTheme ? <MdLightMode /> : <MdDarkMode />}
-            </button>
-          </div>
+          <div className="h-[5px] w-full bg-white dark:bg-[#17191c]" />
         </div>
       </div>
-      <div className="right flex-1 dark:bg-[#17191c]">{children}</div>
+      <div className="right flex-1 flex flex-col h-full min-h-0 overflow-hidden pb-2.5 mb-[10px] dark:bg-[#17191c]">
+        {children}
+      </div>
 
       {/* {children} */}
     </div>

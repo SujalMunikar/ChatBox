@@ -17,6 +17,7 @@ const decryptMessage = (
   cipherText: string,
   privateKey: [bigint, bigint]
 ): string => {
+  // Reconstruct plain text by decrypting each chunk using the supplied RSA private key.
   const plainText: string[] = [];
   const cipherArray = cipherText.split("~");
   const d = privateKey[0];
