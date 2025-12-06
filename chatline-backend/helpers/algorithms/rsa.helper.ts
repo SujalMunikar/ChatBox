@@ -1,4 +1,4 @@
-// Rivest Shamir Adleman Algorithm  by Abid Adhikari
+// Rivest Shamir Adleman Algorithm 
 // Function to check if a number is prime
 interface RSAKeys {
   publicKey: [number, number];
@@ -48,7 +48,7 @@ function generateKeys(min: number, max: number): RSAKeys {
 
   // Encrypt the message
   // Self-test ensures the generated key pair can successfully encrypt/decrypt sample text.
-  const cipherText = encryptMessage("Abid Adhikari", [BigInt(e), BigInt(n)]);
+  const cipherText = encryptMessage("Sujal Munikar", [BigInt(e), BigInt(n)]);
   const plainText = decryptMessage(cipherText, [BigInt(d), BigInt(n)]);
 
   return {

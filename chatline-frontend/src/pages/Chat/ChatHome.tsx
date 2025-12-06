@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import ChatHomeLayout from "../../Layouts/ChatHomeLayout";
-import WelcomeChat from "../../components/Chat/WelcomeChat";
 import { useAppDispatch } from "../../store";
 import { setConversationUser } from "../../features/user/userSlice";
 import ProfileLayout from "../../Layouts/ProfileLayout";
+import ConversationBody from "../../components/Chat/ConversationBody";
+import ErrorBoundary from "../../components/ErrorBoundary";
 
 // Landing view for the chat section showing a friendly welcome panel.
 function ChatHome() {
@@ -17,7 +18,9 @@ function ChatHome() {
   return (
     <ProfileLayout>
       <ChatHomeLayout embedded>
-        <WelcomeChat />
+        <ErrorBoundary>
+          <ConversationBody />
+        </ErrorBoundary>
       </ChatHomeLayout>
     </ProfileLayout>
   );
